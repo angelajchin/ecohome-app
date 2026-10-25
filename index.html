@@ -1,5 +1,5 @@
 <!-- note: git add ., git commit -m "update", git push
-to publish on github -->
+to update on github -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -185,6 +185,7 @@ to publish on github -->
     let currentPage = 0;
     let rainGameCleanup = null;
 
+    //carousel for rooms
     function switchRoom(roomId, bgImagePath) {
       document.getElementById('house-stage').style.backgroundImage = `url('${bgImagePath}')`;
 
@@ -223,16 +224,16 @@ to publish on github -->
       document.querySelector("#sticky-note .note").classList.remove("note-compost-game", "note-rain-game");
       title.innerText = currentObject;
 
-      if (currentObject === "egg carton planter") {
+      if (currentObject === "Egg Carton Planter") {
         if (currentPage === 0) {
-          text.innerText = "biodegradable egg cartons are a great alternative to plastic pots!";
+          text.innerText = "Biodegradable egg cartons are a great alternative to plastic pots!";
         } else if (currentPage === 1) {
-          text.innerText = "cut a hole in each cup for drainage, then fill each cup with soil and plant your seeds.";
+          text.innerText = "Cut a hole in each cup for drainage, then fill each cup with soil and plant your seeds.";
         } else if (currentPage === 2) {
-          text.innerText = "dampen the soil with water and place your egg carton in a sunny spot. they should sprout in a few weeks!";
+          text.innerText = "Dampen the soil with water and place your egg carton in a sunny spot. They should sprout in a few weeks!";
         } else {
           nextBtn.innerText = "Done";
-          text.innerText = "let's try! drag two seeds into the carton!";
+          text.innerText = "Let's try! drag two seeds into the carton!";
           game.innerHTML = `
             <div id="seed" class="game-item drag-item" draggable="true">Seed</div>
             <div id="carton" class="game-item drop-zone" role="button" tabindex="0"
