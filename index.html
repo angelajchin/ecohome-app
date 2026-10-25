@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoHome</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="sketchbook-container">
+
+    <header class="app-header">
+      <h1>EcoHome</h1>
+    </header>
+
+    <div class="main-content">
+      <aside class="sidebar-ladder">
+        <div class="ladder-step">
+          <span class="icon"></span>
+          <span class="label">Menu</span>
+        </div>
+        <div class="ladder-step">
+          <span class="icon"></span>
+          <span class="label">About</span>
+        </div>
+
+        <a href="#feedback-modal" class="ladder-step">
+        <span class="label">Feedback</span>
+        </a>
+      </aside>
+
+    <div id="feedback-modal" class="modal-overlay">
+      <div class="note feedback-note">
+        <a href="#" class="close">&times;</a>
+        <h2>Send Feedback</h2>
+      
+        <iframe
+          src="https://docs.google.com/forms/d/e/1FAIpQLSeJQiZbP9_TVDlTk3NHRxvYvGivOK_4yyEEQCCU_ZaVofORKQ/viewform?embedded=true"
+          title="EcoHome feedback form"
+          loading="lazy">
+        </iframe>
+        <a class="feedback-form-link"
+           href="https://docs.google.com/forms/d/e/1FAIpQLSeJQiZbP9_TVDlTk3NHRxvYvGivOK_4yyEEQCCU_ZaVofORKQ/viewform"
+           target="_blank" rel="noopener noreferrer">
+          Open Google Form in a new tab
+        </a>
+      </div>
+    </div>
+
+      <main class="house-viewport">
+        <div id="house-stage" class="house">
+          
+          <div id="kitchen-objects" class="room-layer active-room">
+            <button type="button" class="object room-hotspot"
+                    style="top: 10px; left: 480px; width: 320px; height: 360px;"
+                    aria-label="Explore refrigerator" onclick="openNote('Fridges')"></button>
+
+            <button type="button" class="object room-hotspot"
+                    style="top: 70px; left: 85px; width: 130px; height: 110px;"
+                    aria-label="Explore homemade disinfectant" onclick="openNote('homemade disinfectant')"></button>
+
+            <button type="button" class="object room-hotspot"
+                    style="top: 210px; left: 170px; width: 180px; height: 150px;"></button>
+          </div>
+
+          <div id="garden-objects" class="room-layer">
+            <button type="button" class="object room-hotspot"
+                    style="top: 300px; left: 420px; width: 100px; height: 100px;"
+                    aria-label="Explore egg carton planter" onclick="openNote('egg carton planter')"></button>
+
+            <button type="button" class="object room-hotspot"
+                    style="top: 220px; left: 220px; width: 100px; height: 100px;"
+                    aria-label="Explore composting" onclick="openNote('Composting')"></button>
+          </div>
+
+          <div id="rainwater-objects" class="room-layer">
+            <button type="button" class="object room-hotspot"
+                    style="top: 100px; left: 260px; width: 180px; height: 300px;"
+                    aria-label="Explore rainwater collector" onclick="openNote('Rainwater Collector')"></button></div>
+          </div>
+
+          <div id="bathroom-objects" class="room-layer">
+            <button type="button" class="object room-hotspot"
+                    style="top: 330px; left: 220px; width: 200px; height: 130px;"
+                    aria-label="Explore bathroom sink water conservation"
+                    onclick="openNote('Bathroom Sink')"></button>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <nav class="room-bottom">
+      <div class="bottom-card active" onclick="switchRoom('kitchen', 'assets/images/insideKitchen.jpg')">
+        <span>Kitchen</span>
+      </div>
+      <div class="bottom-card" onclick="switchRoom('bathroom', 'assets/images/insideBathroom.jpg')">
+        <span>Bathroom</span>
+      </div>
+      <div class="bottom-card" onclick="switchRoom('garden', 'assets/images/backyardGarden.jpg')">
+        <span>Garden</span>
+      </div>
+      <div class="bottom-card" onclick="switchRoom('rainwater', 'assets/images/backyardRainwater.jpg')">
+        <span>Rainwater Collector</span>
+      </div>
+    </nav>
+
+  </div>
+
+  <div id="sticky-note">
+    <div class="note">
+      <span class="close" onclick="closeNote()">✖</span>
+      <h2 id="note-title"></h2>
+      <p id="note-text"></p>
+      <div id="mini-game"></div>
+      <button id="next-btn" onclick="nextPage()">Next</button>
+    </div>
+  </div>
+
+
+  <script>
+    let currentObject = "";
+    let currentPage = 0;
+    let rainGameCleanup = null;
+
+    function switchRoom(roomId, bgImagePath) {
+      document.getElementById('house-stage').style.backgroundImage = `url('${bgImagePath}')`;
+
+      document.querySelectorAll('.room-layer').forEach(layer => {
+        layer.classList.remove('active-room');
+      });
+
+      const activeLayer = document.getElementById(`${roomId}-objects`);
+      if (activeLayer) {
+        activeLayer.classList.add('active-room');
+      }
+
+      document.querySelectorAll('.bottom-card').forEach(card => {
+        card.classList.remove('active');
+      });
+      event.currentTarget.classList.add('active');
+    }
+
+    function openNote(objectName) {
+      const nextBtn = document.getElementById("next-btn");
+      currentObject = objectName;
+      currentPage = 0;
+      nextBtn.innerText = "Next";
+      document.getElementById("sticky-note").style.display = "flex";
+      showPage();
+    }
+
+    function showPage() {
+      const title = document.getElementById("note-title");
+      const text = document.getElementById("note-text");
+      const game = document.getElementById("mini-game");
+      const nextBtn = document.getElementById("next-btn");
+
+      stopRainGame();
+      game.innerHTML = "";
+      document.querySelector("#sticky-note .note").classList.remove("note-compost-game", "note-rain-game");
+      title.innerText = currentObject;
+
+      if (currentObject === "egg carton planter") {
+        if (currentPage === 0) {
+          text.innerText = "biodegradable egg cartons are a great alternative to plastic pots!";
+        } else if (currentPage === 1) {
+          text.innerText = "cut a hole in each cup for drainage, then fill each cup with soil and plant your seeds.";
+        } else if (currentPage === 2) {
+          text.innerText = "dampen the soil with water and place your egg carton in a sunny spot. they should sprout in a few weeks!";
+        } else {
+          nextBtn.innerText = "Done";
+          text.innerText = "let's try! drag two seeds into the carton!";
+          game.innerHTML = `
+            <div id="seed" class="game-item drag-item" draggable="true">Seed</div>
+            <div id="carton" class="game-item drop-zone" role="button" tabindex="0"
+                 aria-label="Seed carton">Carton · Seeds: 0/2</div>
+          `;
+          setupEggGame();
+          return
+        }
+      }
+
+      if (currentObject === "Composting") {
+        if (currentPage === 0) {
+          text.innerText = "Instead of disposing of your organic waste in landfills, consider composting! Composting is a natural process that involves decomposing organic waste into nutrient-rich soil. It helps reduce landfill waste and enriches your garden soil.";
+        } else if (currentPage === 1) {
+          text.innerText = "To start composting, you can use a compost bin or pile. Add a mix of 'greens' (fruit and vegetable scraps, coffee grounds) and 'browns' (dry leaves, cardboard, paper). Turn the pile regularly to aerate it.";
+        } else if (currentPage === 2) {
+          text.innerText = "Compost supplies your garden with ample nutrients like nitrogen and phosphorus. Avoid adding meat, dairy, or oily foods to your compost as they can attract pests.";
+        } else {
+          nextBtn.innerText = "Done";
+          document.querySelector("#sticky-note .note").classList.add("note-compost-game");
+          text.innerText = "Your turn! Drag each item onto the compost and see if it belongs.";
+          game.innerHTML = `
+            <div class="compost-items" aria-label="Items to try composting">
+              <button type="button" id="banana" class="compost-item drag-item"
+                      data-compostable="true" data-name="Banana peel"
+                      draggable="true" aria-pressed="false">
+                <img src="assets/images/game_banana.png" alt="Banana peel">
+                <span>Banana peel</span>
+              </button>
+              <button type="button" id="bone" class="compost-item drag-item"
+                      data-compostable="false" data-name="Bone"
+                      data-feedback="While crushed bones are a good source of calcium, avoid adding whole bones. They break down slowly and can attract pests in your backyard."
+                      draggable="true" aria-pressed="false">
+                <img src="assets/images/game_bone.png" alt="Bone">
+                <span>Bone</span>
+              </button>
+              <button type="button" id="leaf" class="compost-item drag-item"
+                      data-compostable="true" data-name="Leaf"
+                      draggable="true" aria-pressed="false">
+                <img src="assets/images/game_leaf.png" alt="Leaf">
+                <span>Leaf</span>
+              </button>
+              <button type="button" id="newspaper" class="compost-item drag-item"
+                      data-compostable="true" data-name="Newspaper"
+                      draggable="true" aria-pressed="false">
+                <img src="assets/images/game_newspaper.png" alt="Newspaper">
+                <span>Newspaper</span>
+              </button>
+              <button type="button" id="oil" class="compost-item drag-item"
+                      data-compostable="false" data-name="Oil"
+                      data-feedback="Oils and fats are hydrophobic, so they block water and air cycling through the compost. They can slow down composting and attract pests."
+                      draggable="true" aria-pressed="false">
+                <img src="assets/images/game_oil.png" alt="Oil">
+                <span>Oil</span>
+              </button>
+            </div>
+            <div id="compost-target" class="compost-target drop-zone" role="button" tabindex="0"
+                 aria-label="Compost bin drop target">
+              <img src="assets/images/game_compost.png" alt="Compost bin" draggable="false">
+            </div>
+            <p id="compost-status" class="compost-status" aria-live="polite">
+              Compostable items found: 0 of 3.
+            </p>
+          `;
+          setupCompostGame();
+          return;
+        }
+      }
+
+      if (currentObject === "Fridges") {
+        if (currentPage === 0) {
+          text.innerText = "Using fridges with freezers on top consume less energy due to better airflow. Another great alternative for long-term food preservation is the chest freezer; it keeps food frozen for longer since cold air cannot escape as easily.";
+        } else if (currentPage === 1) {
+          text.innerText = "Make sure to keep your fridge at 37-40°F (3-4°C) and freezer at 0°F (-18°C) for optimal energy efficiency.";
+        } else {
+          text.innerText = "To further cut back on food waste, store ethylene-producing fruits (apples, bananas, avocados, etc.) and vegetables separately from those that are sensitive to it (leafy greens, broccoli, cucumbers, etc.). This will help prevent premature ripening and spoilage.";
+          nextBtn.innerText = "Done";
+          return;
+        }
+      }
+
+      if (currentObject === "Bathroom Sink") {
+        if (currentPage === 0) {
+          text.innerText = "Turn off the tap while brushing your teeth, shaving, or washing your face. Doing so can conserve up to 8 gallons of water per day. That's about 60 plastic water bottles worth of water saved!";
+        } else if (currentPage === 1) {
+          text.innerText = "Keep showers short and consider installing a WaterSense-labeled low-flow showerhead to reduce water use without sacrificing comfort.";
+        } else {
+          text.innerText = "Fix dripping faucets promptly. A small leak can waste a surprising amount of water over time, and faucet aerators can reduce flow while keeping good water pressure.";
+          nextBtn.innerText = "Done";
+          return;
+        }
+      }
+
+      if (currentObject === "Rainwater Collector") {
+        if (currentPage === 0) {
+          text.innerText = "Harvesting rainwater reduces the reliance on municipal water, helping to both decrease water bill costs and manage erosion.";
+        } else if (currentPage === 1) {
+          text.innerText = "Of course, your setup does not to be as complicated as the one in this drawing; a simple barrel or container can go a long way!";
+        } else if (currentPage === 2) {
+          text.innerText = "Your collected rainwater can replace tap water for watering plants and other non-potable uses.";
+        } else {
+          nextBtn.innerText = "Done";
+          document.querySelector("#sticky-note .note").classList.add("note-rain-game");
+          text.innerText = "Your turn! Use A/D to move the pail and catch 10 raindrops.";
+          game.innerHTML = `
+            <div id="rain-game" class="rain-game" role="application" tabindex="0"
+                 aria-label="Rainwater collection game">
+              <div class="rain-game-hud">
+                <span>Collected: <strong id="rain-score">0</strong>/10</span>
+              </div>
+              <img id="rain-pail" class="rain-pail" src="assets/images/game_pail.png"
+                   alt="Pail controlled by the player" draggable="false">
+            </div>
+          `;
+          setupRainGame();
+          return;
+        }
+      }
+      nextBtn.innerText = "Next";
+    }
+
+    function nextPage() {
+      const nextBtn = document.getElementById("next-btn");
+      if (nextBtn.innerText === "Done") {
+        closeNote();
+        return;
+      }
+      currentPage++;
+      showPage();
+    }
+
+    function closeNote() {
+      stopRainGame();
+      document.getElementById("sticky-note").style.display = "none";
+      document.getElementById("mini-game").innerHTML = "";
+    }
+
+    function stopRainGame() {
+      if (rainGameCleanup) {
+        rainGameCleanup();
+        rainGameCleanup = null;
+      }
+    }
+
+    function setupEggGame() {
+      const seed = document.getElementById("seed");
+      const carton = document.getElementById("carton");
+      if (!seed || !carton) return;
+      seed.ondragstart = e => e.dataTransfer.setData("text", "seed");
+      carton.ondragover = e => e.preventDefault();
+      let count = 0;
+      carton.ondrop = e => {
+        e.preventDefault();
+        if (e.dataTransfer.getData("text") !== "seed" || count >= 2) return;
+        count++;
+        carton.innerText = `Carton · Seeds: ${count}/2`;
+        carton.classList.toggle("game-item-complete", count === 2);
+      };
+    }
+
+    function setupCleanerGame() {
+      const bottle = document.getElementById("bottle");
+      const vinegar = document.getElementById("vinegar");
+      if (!bottle || !vinegar) return;
+      vinegar.ondragstart = e => e.dataTransfer.setData("text", "vinegar");
+      bottle.ondragover = e => e.preventDefault();
+      let count = 0;
+      bottle.ondrop = e => {
+        e.preventDefault();
+        if (e.dataTransfer.getData("text") !== "vinegar" || count >= 1) return;
+        count++;
+        bottle.innerText = `Bottle · Vinegar: ${count}/1`;
+        bottle.classList.add("game-item-complete");
+      };
+    }
+
+    function setupCompostGame() {
+      const items = [...document.querySelectorAll(".compost-item")];
+      const target = document.getElementById("compost-target");
+      const status = document.getElementById("compost-status");
+      let selectedItem = null;
+      let compostedCount = 0;
+
+      function compostItem(item) {
+        if (!item) return;
+        if (item.dataset.compostable !== "true") {
+          status.innerText = `Try again! ${item.dataset.feedback}`;
+          return;
+        }
+
+        const itemName = item.dataset.name;
+        item.remove();
+        if (selectedItem === item) selectedItem = null;
+        compostedCount++;
+        status.innerText = compostedCount === 3
+          ? `Correct! ${itemName} belongs in compost. 3 of 3.`
+          : `Correct! ${itemName} belongs in compost. ${compostedCount} of 3.`;
+      }
+
+      items.forEach(item => {
+        item.addEventListener("dragstart", event => {
+          if (selectedItem) {
+            selectedItem.classList.remove("selected");
+            selectedItem.setAttribute("aria-pressed", "false");
+            selectedItem = null;
+          }
+          event.dataTransfer.setData("text/plain", item.id);
+          event.dataTransfer.effectAllowed = "move";
+        });
+        item.addEventListener("click", () => {
+          if (selectedItem) {
+            selectedItem.classList.remove("selected");
+            selectedItem.setAttribute("aria-pressed", "false");
+          }
+          selectedItem = item;
+          item.classList.add("selected");
+          item.setAttribute("aria-pressed", "true");
+          status.innerText = `Selected ${item.dataset.name}. Choose the compost bin.`;
+        });
+      });
+
+      target.addEventListener("dragover", event => event.preventDefault());
+      target.addEventListener("dragenter", () => target.classList.add("drag-over"));
+      target.addEventListener("dragleave", () => target.classList.remove("drag-over"));
+      target.addEventListener("drop", event => {
+        event.preventDefault();
+        target.classList.remove("drag-over");
+        const item = document.getElementById(event.dataTransfer.getData("text/plain"));
+        compostItem(item);
+      });
+      target.addEventListener("click", () => compostItem(selectedItem));
+      target.addEventListener("keydown", event => {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          compostItem(selectedItem);
+        }
+      });
+    }
+
+    function setupRainGame() {
+      const arena = document.getElementById("rain-game");
+      const pail = document.getElementById("rain-pail");
+      const scoreDisplay = document.getElementById("rain-score");
+      const status = document.getElementById("rain-status");
+      const pressedKeys = new Set();
+      const drops = [];
+      const moveSpeed = 280;
+      let score = 0;
+      let pailX = 0;
+      let animationFrame = 0;
+      let lastFrameTime = 0;
+      let spawnElapsed = 0;
+      let finished = false;
+
+      function onKeyDown(event) {
+        const key = event.key.toLowerCase();
+        if (key === "a" || key === "d") {
+          event.preventDefault();
+          pressedKeys.add(key);
+        }
+      }
+
+      function onKeyUp(event) {
+        pressedKeys.delete(event.key.toLowerCase());
+      }
+
+
+      function onBlur() {
+        pressedKeys.clear();
+      }
+
+      function onResize() {
+        pailX = Math.max(0, Math.min(arena.clientWidth - pail.offsetWidth, pailX));
+      }
+
+      function spawnDrop() {
+        const drop = document.createElement("img");
+        drop.src = "assets/images/game_raindrop.png";
+        drop.alt = "";
+        drop.draggable = false;
+        drop.className = "falling-raindrop";
+
+        const dropWidth = 24;
+        const maxX = Math.max(0, arena.clientWidth - dropWidth);
+        const x = Math.random() * maxX;
+        arena.appendChild(drop);
+        drops.push({
+          element: drop, 
+          x, 
+          y: -42,
+          speed: 115
+        });
+      }
+
+      function updateFrame(timestamp) {
+        if (finished || !arena.isConnected) return;
+
+        const deltaTime = lastFrameTime
+          ? Math.min((timestamp - lastFrameTime) / 1000, 0.05)
+          : 0;
+        lastFrameTime = timestamp;
+
+        const direction = (pressedKeys.has("d") ? 1 : 0) - (pressedKeys.has("a") ? 1 : 0);
+        pailX = Math.max(
+          0,
+          Math.min(arena.clientWidth - pail.offsetWidth, pailX + direction * moveSpeed * deltaTime)
+        );
+        pail.style.left = `${pailX}px`;
+
+        spawnElapsed += deltaTime;
+        if (spawnElapsed >= 0.65) {
+          spawnElapsed = 0;
+          spawnDrop();
+        }
+
+        const pailTop = arena.clientHeight - pail.offsetHeight - 8;
+        const pailLeft = pailX;
+        const pailRight = pailLeft + pail.offsetWidth;
+
+        for (let index = drops.length - 1; index >= 0; index--) {
+          const drop = drops[index];
+          drop.y += drop.speed * deltaTime;
+          drop.element.style.left = `${drop.x}px`;
+          drop.element.style.top = `${drop.y}px`;
+
+          const caught =
+            drop.y + drop.element.offsetHeight >= pailTop &&
+            drop.y <= pailTop + pail.offsetHeight &&
+            drop.x + drop.element.offsetWidth >= pailLeft &&
+            drop.x <= pailRight;
+
+          if (caught) {
+            drop.element.remove();
+            drops.splice(index, 1);
+            score++;
+            scoreDisplay.innerText = score;
+            if (score === 10) {
+              finished = true;
+              status.innerText = "Great job! You collected 10 raindrops.";
+              break;
+            }
+          } else if (drop.y > arena.clientHeight) {
+            drop.element.remove();
+            drops.splice(index, 1);
+          }
+        }
+
+        if (!finished) animationFrame = requestAnimationFrame(updateFrame);
+      }
+
+      arena.addEventListener("keydown", onKeyDown);
+      arena.addEventListener("keyup", onKeyUp);
+      arena.addEventListener("blur", onBlur);
+      window.addEventListener("resize", onResize);
+
+      pailX = Math.max(0, (arena.clientWidth - pail.offsetWidth) / 2);
+      pail.style.left = `${pailX}px`;
+      arena.focus();
+      animationFrame = requestAnimationFrame(updateFrame);
+
+      rainGameCleanup = () => {
+        cancelAnimationFrame(animationFrame);
+        arena.removeEventListener("keydown", onKeyDown);
+        arena.removeEventListener("keyup", onKeyUp);
+        arena.removeEventListener("blur", onBlur);
+        window.removeEventListener("resize", onResize);
+        drops.forEach(drop => drop.element.remove());
+      };
+    }
+
+
+  </script>
+</body>
+</html>
