@@ -543,6 +543,59 @@ a.ladder-step {
   font-weight: bold;
 }
 
+.resources-note {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(100vh - 24px);
+  padding: 52px 32px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  background-color: #b0dcad;
+}
+
+.resources-note h2 {
+  margin: 0;
+  font-size: 22px;
+}
+
+.resources-intro {
+  margin: 0;
+  padding: 8px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.72);
+  font-size: 15px;
+}
+
+.resource-list {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  text-align: left;
+}
+
+.resource-list li {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 2px solid #8db583;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.resource-list a {
+  color: #234f22;
+  font-weight: bold;
+}
+
+.resource-list span {
+  font-size: 14px;
+}
+
 @media (max-width: 520px) {
   .note-compost-game {
     padding: 48px 14px 16px;
@@ -571,5 +624,9 @@ a.ladder-step {
 
   #rain-controls {
     font-size: 10px;
+  }
+
+  .resources-note {
+    padding: 48px 16px 18px;
   }
 }

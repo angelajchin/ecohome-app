@@ -1,3 +1,6 @@
+<!-- note: git add ., git commit -m "update", git push
+to publish on github -->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,27 +29,86 @@
         </div>
 
         <a href="#feedback-modal" class="ladder-step">
-        <span class="label">Feedback</span>
+          <span class="label">Feedback</span>
+        </a>
+
+        <a href="#resources-modal" class="ladder-step">
+          <span class="label">Resources</span>
         </a>
       </aside>
 
-    <div id="feedback-modal" class="modal-overlay">
-      <div class="note feedback-note">
-        <a href="#" class="close">&times;</a>
-        <h2>Send Feedback</h2>
-      
-        <iframe
-          src="https://docs.google.com/forms/d/e/1FAIpQLSeJQiZbP9_TVDlTk3NHRxvYvGivOK_4yyEEQCCU_ZaVofORKQ/viewform?embedded=true"
-          title="EcoHome feedback form"
-          loading="lazy">
-        </iframe>
-        <a class="feedback-form-link"
-           href="https://docs.google.com/forms/d/e/1FAIpQLSeJQiZbP9_TVDlTk3NHRxvYvGivOK_4yyEEQCCU_ZaVofORKQ/viewform"
-           target="_blank" rel="noopener noreferrer">
-          Open Google Form in a new tab
-        </a>
+      <div id="feedback-modal" class="modal-overlay">
+        <div class="note feedback-note">
+          <a href="#" class="close">&times;</a>
+          <h2>Send Feedback</h2>
+
+          <iframe
+            src="https://docs.google.com/forms/d/e/1FAIpQLSeJQiZbP9_TVDlTk3NHRxvYvGivOK_4yyEEQCCU_ZaVofORKQ/viewform?embedded=true"
+            title="EcoHome feedback form"
+            loading="lazy">
+          </iframe>
+          <a class="feedback-form-link"
+             href="https://docs.google.com/forms/d/e/1FAIpQLSeJQiZbP9_TVDlTk3NHRxvYvGivOK_4yyEEQCCU_ZaVofORKQ/viewform"
+             target="_blank" rel="noopener noreferrer">
+            Open Google Form in a new tab
+          </a>
+        </div>
       </div>
-    </div>
+
+      <div id="resources-modal" class="modal-overlay">
+        <section class="note resources-note" aria-labelledby="resources-title">
+          <a href="#" class="close" aria-label="Close resources">&times;</a>
+          <h2 id="resources-title">Resources</h2>
+          <p class="resources-intro">
+            Organizations and articles to help you learn more about environmental issues and take action in your community.
+          </p>
+          <ul class="resource-list">
+            <li>
+              <a href="https://www.biologicaldiversity.org/programs/population_and_sustainability/sustainability/live_more_sustainably.html" target="_blank" rel="noopener noreferrer">
+                Center for Biological Diversity: How to Live More Sustainably
+              </a>
+              <span>An article on sustainable living practices.</span>
+            </li>
+            <li>
+              <a href="https://science.nasa.gov/climate-change/effects/" target="_blank" rel="noopener noreferrer">
+                NASA Climate Change Effects
+              </a>
+              <span>An article on the impacts of climate change.</span>
+            </li>
+
+            <li>
+              <a href="https://amigosdelosrios.org/volunteer/" target="_blank" rel="noopener noreferrer">
+                Amigos de los Rios
+              </a>
+              <span>Volunteer with urban greening, tree planting, park care, and cleanups across the Los Angeles Basin.</span>
+            </li>
+            <li>
+              <a href="https://treepeople.org/volunteer/" target="_blank" rel="noopener noreferrer">
+                TreePeople
+              </a>
+              <span>Find volunteer events for urban tree planting, tree care, and watershed restoration in Southern California.</span>
+            </li>
+            <li>
+              <a href="https://www.lawaterkeeper.org/" target="_blank" rel="noopener noreferrer">
+                Los Angeles Waterkeeper
+              </a>
+              <span>Support efforts to protect local rivers, beaches, and ocean water quality.</span>
+            </li>
+            <li>
+              <a href="https://folar.org/" target="_blank" rel="noopener noreferrer">
+                Friends of the Los Angeles River (FoLAR)
+              </a>
+              <span>Support Los Angeles River restoration, education, community events, and advocacy.</span>
+            </li>
+            <li>
+              <a href="https://healthebay.org/take-part/" target="_blank" rel="noopener noreferrer">
+                Heal the Bay
+              </a>
+              <span>Join coastal cleanups and other opportunities to protect the Santa Monica Bay and local coastline.</span>
+            </li>
+          </ul>
+        </section>
+      </div>
 
       <main class="house-viewport">
         <div id="house-stage" class="house">
