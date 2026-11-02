@@ -119,17 +119,22 @@ to update on github -->
                     aria-label="Explore refrigerator" onclick="openNote('Fridges')"></button>
 
             <button type="button" class="object room-hotspot"
-                    style="top: 70px; left: 85px; width: 130px; height: 110px;"
-                    aria-label="Explore homemade disinfectant" onclick="openNote('homemade disinfectant')"></button>
+                    style="top: 70px; left: 300px; width: 120px; height: 110px;"
+                    aria-label="Explore plants" onclick="openNote('Plants')"></button>
 
             <button type="button" class="object room-hotspot"
-                    style="top: 210px; left: 170px; width: 180px; height: 150px;"></button>
+                    style="top: 210px; left: 170px; width: 180px; height: 150px;"
+                    aria-label="Explore oven" onclick="openNote('Oven')"></button>
+
+            <button type="button" class="object room-hotspot"
+                    style="top: 395px; left: 45px; width: 140px; height: 100px;"
+                    aria-label="Explore homemade cleaning spray" onclick="openNote('Cleaning Spray')"></button>
           </div>
 
           <div id="garden-objects" class="room-layer">
             <button type="button" class="object room-hotspot"
                     style="top: 300px; left: 420px; width: 100px; height: 100px;"
-                    aria-label="Explore egg carton planter" onclick="openNote('egg carton planter')"></button>
+                    aria-label="Explore garden" onclick="openNote('Planter Box')"></button>
 
             <button type="button" class="object room-hotspot"
                     style="top: 220px; left: 220px; width: 100px; height: 100px;"
@@ -145,8 +150,17 @@ to update on github -->
           <div id="bathroom-objects" class="room-layer">
             <button type="button" class="object room-hotspot"
                     style="top: 330px; left: 220px; width: 200px; height: 130px;"
-                    aria-label="Explore bathroom sink water conservation"
-                    onclick="openNote('Bathroom Sink')"></button>
+                    aria-label="Explore bathroom sink" onclick="openNote('Bathroom Sink')"></button>
+
+                    <button type="button" class="object room-hotspot"
+                    style="top: 400px; left: 625px; width: 100px; height: 80px;"
+                    aria-label="Explore soap" onclick="openNote('Soap')"></button>
+
+                    <button type="button" class="object room-hotspot"
+                    style="top: 230px; left: 470px; width: 100px; height: 120px;"
+                    aria-label="Explore cleaning chemicals" onclick="openNote('Cleaning Chemicals')"></button>
+
+
           </div>
         </div>
       </main>
@@ -221,7 +235,9 @@ to update on github -->
 
       stopRainGame();
       game.innerHTML = "";
-      document.querySelector("#sticky-note .note").classList.remove("note-compost-game", "note-rain-game");
+      document.querySelector("#sticky-note .note").classList.remove(
+        "note-compost-game", "note-rain-game", "note-kitchen-game"
+      );
       title.innerText = currentObject;
 
       if (currentObject === "Egg Carton Planter") {
@@ -308,11 +324,133 @@ to update on github -->
           text.innerText = "Using fridges with freezers on top consume less energy due to better airflow. Another great alternative for long-term food preservation is the chest freezer; it keeps food frozen for longer since cold air cannot escape as easily.";
         } else if (currentPage === 1) {
           text.innerText = "Make sure to keep your fridge at 37-40°F (3-4°C) and freezer at 0°F (-18°C) for optimal energy efficiency.";
-        } else {
+        } else if (currentPage === 2) {
           text.innerText = "To further cut back on food waste, store ethylene-producing fruits (apples, bananas, avocados, etc.) and vegetables separately from those that are sensitive to it (leafy greens, broccoli, cucumbers, etc.). This will help prevent premature ripening and spoilage.";
+        } else {
+          showKitchenChoiceGame(
+            "What is a good target temperature for your refrigerator?",
+            ["32°F (0°C)", "38°F (3°C)", "50°F (10°C)"],
+            1,
+            "Right! Keeping the fridge at 37-40°F helps keep food safe without overcooling."
+          );
+          return;
+        }
+      }
+
+      if (currentObject === "Plants") {
+        if (currentPage === 0) {
+          text.innerText = "Indoor plants can brighten a room, but watering needs vary. Check the soil before watering; many plants do better when the top layer has dried than on a fixed daily schedule.";
+        } else {
+          showKitchenChoiceGame(
+            "How can you avoid wasting water when caring for a houseplant?",
+            ["Water on a strict daily schedule", "Check the soil and water when the plant needs it", "Leave the tap running while you fill the pot"],
+            1,
+            "Exactly! Checking the soil helps you give the plant water when it needs it."
+          );
+          return;
+        }
+      }
+
+      if (currentObject === "Oven") {
+        if (currentPage === 0) {
+          text.innerText = "Ovens use a lot of energy to heat a large space. For small meals, a microwave or toaster oven can often use less energy. When using the oven, bake several dishes together when practical.";
+        } else {
+          showKitchenChoiceGame(
+            "You only need to warm one small serving. What is usually the more energy-saving choice?",
+            ["Heat the full-size oven", "Use a microwave, if suitable for the food", "Run the oven empty first"],
+            1,
+            "Good choice! A microwave can use less energy than heating a full-size oven for one small serving."
+          );
+          return;
+        }
+      }
+
+      if (currentObject === "Cleaning Spray") {
+        if (currentPage === 0) {
+          text.innerText = "For light cleaning, use equal parts water and white vinegar in a reusable spray bottle on vinegar-safe surfaces. It is not a disinfectant; follow a product label when disinfection is needed. Never mix cleaners, especially vinegar and bleach.";
+        } else {
+          const note = document.querySelector("#sticky-note .note");
+          note.classList.add("note-kitchen-game");
+          text.innerText = "Build a simple everyday cleaner. Choose water and white vinegar, then check your recipe.";
+          game.innerHTML = `
+            <div class="cleaner-ingredients" aria-label="Cleaner ingredients">
+              <button type="button" class="kitchen-game-option" data-ingredient="water" aria-pressed="false">Water</button>
+              <button type="button" class="kitchen-game-option" data-ingredient="vinegar" aria-pressed="false">White vinegar</button>
+              <button type="button" class="kitchen-game-option" data-ingredient="bleach" aria-pressed="false">Bleach</button>
+              <button type="button" class="kitchen-game-option" data-ingredient="soap" aria-pressed="false">Extra cleaner</button>
+            </div>
+            <button type="button" id="check-cleaner" class="kitchen-game-submit">Check my cleaner</button>
+            <p id="kitchen-game-status" class="kitchen-game-status" aria-live="polite">
+              Select two ingredients.
+            </p>
+          `;
+          setupCleanerRecipeGame();
           nextBtn.innerText = "Done";
           return;
         }
+      }
+
+      function showKitchenChoiceGame(question, options, answerIndex, successMessage) {
+        const note = document.querySelector("#sticky-note .note");
+        note.classList.add("note-kitchen-game");
+        text.innerText = question;
+        game.innerHTML = `
+          <div class="kitchen-game-choices">
+            ${options.map((option, index) => `
+              <button type="button" class="kitchen-game-option" data-answer="${index}">
+                ${option}
+              </button>
+            `).join("")}
+          </div>
+          <p id="kitchen-game-status" class="kitchen-game-status" aria-live="polite">
+            Choose an answer.
+          </p>
+        `;
+        game.querySelectorAll(".kitchen-game-option").forEach(option => {
+          option.addEventListener("click", () => {
+            const status = document.getElementById("kitchen-game-status");
+            if (Number(option.dataset.answer) === answerIndex) {
+              status.innerText = successMessage;
+              game.querySelectorAll(".kitchen-game-option").forEach(button => {
+                button.disabled = true;
+              });
+            } else {
+              status.innerText = "Not quite. Try another answer.";
+            }
+          });
+        });
+        nextBtn.innerText = "Done";
+      }
+
+      function setupCleanerRecipeGame() {
+        const selected = new Set();
+        const options = [...document.querySelectorAll(".cleaner-ingredients .kitchen-game-option")];
+        const status = document.getElementById("kitchen-game-status");
+        const checkButton = document.getElementById("check-cleaner");
+
+        options.forEach(option => {
+          option.addEventListener("click", () => {
+            const ingredient = option.dataset.ingredient;
+            if (selected.has(ingredient)) {
+              selected.delete(ingredient);
+              option.setAttribute("aria-pressed", "false");
+              option.classList.remove("selected");
+            } else {
+              selected.add(ingredient);
+              option.setAttribute("aria-pressed", "true");
+              option.classList.add("selected");
+            }
+            status.innerText = `Selected ${selected.size} ingredient${selected.size === 1 ? "" : "s"}.`;
+          });
+        });
+
+        checkButton.addEventListener("click", () => {
+          if (selected.size === 2 && selected.has("water") && selected.has("vinegar")) {
+            status.innerText = "That's the recipe! Use only on vinegar-safe surfaces, and never mix it with other cleaners.";
+          } else {
+            status.innerText = "Choose water and white vinegar only. Never add bleach or mix cleaning products.";
+          }
+        });
       }
 
       if (currentObject === "Bathroom Sink") {
