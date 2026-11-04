@@ -11,7 +11,53 @@ to update on github -->
 </head>
 <body>
 
-  <div class="sketchbook-container">
+  <main id="welcome-page" class="welcome-page" aria-labelledby="welcome-title" tabindex="-1">
+    <header class="welcome-header">
+      <img class="spinning-earth" src="assets/images/game_spinninglogo.png" alt="">
+      <div class="welcome-brand">
+        <h1 id="welcome-title">EcoHome</h1>
+        <p>Small steps at home can make a big difference.</p>
+      </div>
+      <button id="start-button" class="start-button" type="button">Start exploring</button>
+    </header>
+
+    <section class="welcome-carousel" aria-label="Discover EcoHome">
+      <button class="carousel-arrow" id="previous-slide" type="button" aria-label="Previous slide">
+        <span aria-hidden="true">&lsaquo;</span>
+      </button>
+      <div class="carousel-slides" aria-live="polite">
+        <article class="welcome-slide" aria-roledescription="slide" aria-label="1 of 3">
+          <img src="assets/images/insideKitchen.jpg" alt="A home kitchen to explore">
+          <div class="slide-copy">
+            <p class="slide-number">01 / 03</p>
+            <h2>Make Your Home More Sustainable</h2>
+            <p>Explore everyday choices that can save water, reduce waste, and help care for the environment.</p>
+          </div>
+        </article>
+        <article class="welcome-slide" aria-roledescription="slide" aria-label="2 of 3" hidden>
+          <img src="assets/images/backyardGarden.jpg" alt="A backyard garden with plants">
+          <div class="slide-copy">
+            <p class="slide-number">02 / 03</p>
+            <h2>Discover Ideas in Every Room</h2>
+            <p>Visit the kitchen, bathroom, and backyard to find practical sustainable living tips.</p>
+          </div>
+        </article>
+        <article class="welcome-slide" aria-roledescription="slide" aria-label="3 of 3" hidden>
+          <img src="assets/images/backyardRainwater.jpg" alt="A backyard rainwater collection setup">
+          <div class="slide-copy">
+            <p class="slide-number">03 / 03</p>
+            <h2>Learn with Activities</h2>
+            <p>Try fun activities as you learn how small actions can make a difference in your community.</p>
+          </div>
+        </article>
+      </div>
+      <button class="carousel-arrow" id="next-slide" type="button" aria-label="Next slide">
+        <span aria-hidden="true">&rsaquo;</span>
+      </button>
+    </section>
+  </main>
+
+  <div id="eco-home-app" class="sketchbook-container" tabindex="-1" hidden>
 
     <header class="app-header">
       <h1>EcoHome</h1>
@@ -19,14 +65,14 @@ to update on github -->
 
     <div class="main-content">
       <aside class="sidebar-ladder">
-        <div class="ladder-step">
+        <a href="#welcome-page" class="ladder-step" id="home-menu-link">
           <span class="icon"></span>
           <span class="label">Menu</span>
-        </div>
-        <div class="ladder-step">
+        </a>
+        <a href="#about-modal" class="ladder-step">
           <span class="icon"></span>
           <span class="label">About</span>
-        </div>
+        </a>
 
         <a href="#feedback-modal" class="ladder-step">
           <span class="label">Feedback</span>
@@ -36,6 +82,16 @@ to update on github -->
           <span class="label">Resources</span>
         </a>
       </aside>
+
+      <div id="about-modal" class="modal-overlay">
+        <section class="note info-note" aria-labelledby="about-title">
+          <a href="#" class="close" aria-label="Close About">&times;</a>
+          <h2 id="about-title">About EcoHome</h2>
+          <p class="resources-intro">
+            EcoHome is an interactive learning website designed to educate students about sustainable living. Explore the kitchen, bathroom, and backyard to discover practical ways to save water, reduce waste, and care for the environment. Click the highlighted objects to learn more and try activities that put these ideas into practice!
+          </p>
+        </section>
+      </div>
 
       <div id="feedback-modal" class="modal-overlay">
         <div class="note feedback-note">
@@ -163,16 +219,16 @@ to update on github -->
     </div>
 
     <nav class="room-bottom">
-      <div class="bottom-card active" onclick="switchRoom('kitchen', 'assets/images/insideKitchen.jpg')">
+      <div id="kitchen-room" class="bottom-card active" onclick="switchRoom('kitchen', 'assets/images/insideKitchen.jpg')">
         <span>Kitchen</span>
       </div>
-      <div class="bottom-card" onclick="switchRoom('bathroom', 'assets/images/insideBathroom.jpg')">
+      <div id="bathroom-room" class="bottom-card" onclick="switchRoom('bathroom', 'assets/images/insideBathroom.jpg')">
         <span>Bathroom</span>
       </div>
-      <div class="bottom-card" onclick="switchRoom('garden', 'assets/images/backyardGarden.jpg')">
+      <div id="garden-room" class="bottom-card" onclick="switchRoom('garden', 'assets/images/backyardGarden.jpg')">
         <span>Garden</span>
       </div>
-      <div class="bottom-card" onclick="switchRoom('rainwater', 'assets/images/backyardRainwater.jpg')">
+      <div id="rainwater-room" class="bottom-card" onclick="switchRoom('rainwater', 'assets/images/backyardRainwater.jpg')">
         <span>Rainwater Collector</span>
       </div>
     </nav>
@@ -195,6 +251,39 @@ to update on github -->
     let currentPage = 0;
     let rainGameCleanup = null;
 
+    const welcomePage = document.getElementById("welcome-page");
+    const ecoHomeApp = document.getElementById("eco-home-app");
+    const welcomeSlides = [...document.querySelectorAll(".welcome-slide")];
+    let activeWelcomeSlide = 0;
+
+    function showWelcomeSlide(index) {
+      activeWelcomeSlide = (index + welcomeSlides.length) % welcomeSlides.length;
+      welcomeSlides.forEach((slide, slideIndex) => {
+        slide.hidden = slideIndex !== activeWelcomeSlide;
+      });
+    }
+
+    document.getElementById("previous-slide").addEventListener("click", () => {
+      showWelcomeSlide(activeWelcomeSlide - 1);
+    });
+
+    document.getElementById("next-slide").addEventListener("click", () => {
+      showWelcomeSlide(activeWelcomeSlide + 1);
+    });
+
+    document.getElementById("start-button").addEventListener("click", () => {
+      welcomePage.hidden = true;
+      ecoHomeApp.hidden = false;
+      ecoHomeApp.focus();
+    });
+
+    document.getElementById("home-menu-link").addEventListener("click", event => {
+      event.preventDefault();
+      ecoHomeApp.hidden = true;
+      welcomePage.hidden = false;
+      welcomePage.focus();
+    });
+
     //carousel for rooms
     function switchRoom(roomId, bgImagePath) {
       document.getElementById('house-stage').style.backgroundImage = `url('${bgImagePath}')`;
@@ -211,7 +300,10 @@ to update on github -->
       document.querySelectorAll('.bottom-card').forEach(card => {
         card.classList.remove('active');
       });
-      event.currentTarget.classList.add('active');
+      const activeCard = document.getElementById(`${roomId}-room`);
+      if (activeCard) {
+        activeCard.classList.add('active');
+      }
     }
 
     function openNote(objectName) {
