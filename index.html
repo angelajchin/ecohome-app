@@ -125,10 +125,6 @@ to update on github -->
             <button type="button" class="object room-hotspot"
                     style="top: 210px; left: 170px; width: 180px; height: 150px;"
                     aria-label="Explore oven" onclick="openNote('Oven')"></button>
-
-            <button type="button" class="object room-hotspot"
-                    style="top: 395px; left: 45px; width: 140px; height: 100px;"
-                    aria-label="Explore homemade cleaning spray" onclick="openNote('Cleaning Spray')"></button>
           </div>
 
           <div id="garden-objects" class="room-layer">
@@ -233,6 +229,7 @@ to update on github -->
       const game = document.getElementById("mini-game");
       const nextBtn = document.getElementById("next-btn");
 
+      text.innerText = "";
       stopRainGame();
       game.innerHTML = "";
       document.querySelector("#sticky-note .note").classList.remove(
@@ -240,7 +237,7 @@ to update on github -->
       );
       title.innerText = currentObject;
 
-      if (currentObject === "Egg Carton Planter") {
+      if (currentObject === "Planter Box") {
         if (currentPage === 0) {
           text.innerText = "Biodegradable egg cartons are a great alternative to plastic pots!";
         } else if (currentPage === 1) {
@@ -362,32 +359,7 @@ to update on github -->
             "Good choice! A microwave can use less energy than heating a full-size oven for one small serving."
           );
           return;
-        }
-      }
-
-      if (currentObject === "Cleaning Spray") {
-        if (currentPage === 0) {
-          text.innerText = "For light cleaning, use equal parts water and white vinegar in a reusable spray bottle on vinegar-safe surfaces. It is not a disinfectant; follow a product label when disinfection is needed. Never mix cleaners, especially vinegar and bleach.";
-        } else {
-          const note = document.querySelector("#sticky-note .note");
-          note.classList.add("note-kitchen-game");
-          text.innerText = "Build a simple everyday cleaner. Choose water and white vinegar, then check your recipe.";
-          game.innerHTML = `
-            <div class="cleaner-ingredients" aria-label="Cleaner ingredients">
-              <button type="button" class="kitchen-game-option" data-ingredient="water" aria-pressed="false">Water</button>
-              <button type="button" class="kitchen-game-option" data-ingredient="vinegar" aria-pressed="false">White vinegar</button>
-              <button type="button" class="kitchen-game-option" data-ingredient="bleach" aria-pressed="false">Bleach</button>
-              <button type="button" class="kitchen-game-option" data-ingredient="soap" aria-pressed="false">Extra cleaner</button>
-            </div>
-            <button type="button" id="check-cleaner" class="kitchen-game-submit">Check my cleaner</button>
-            <p id="kitchen-game-status" class="kitchen-game-status" aria-live="polite">
-              Select two ingredients.
-            </p>
-          `;
-          setupCleanerRecipeGame();
-          nextBtn.innerText = "Done";
-          return;
-        }
+        }  
       }
 
       function showKitchenChoiceGame(question, options, answerIndex, successMessage) {
@@ -424,9 +396,9 @@ to update on github -->
 
       function setupCleanerRecipeGame() {
         const selected = new Set();
-        const options = [...document.querySelectorAll(".cleaner-ingredients .kitchen-game-option")];
-        const status = document.getElementById("kitchen-game-status");
-        const checkButton = document.getElementById("check-cleaner");
+        const options = [...game.querySelectorAll(".cleaner-ingredients [data-ingredient]")];
+        const status = game.querySelector("[aria-live='polite']");
+        const checkButton = game.querySelector("#check-cleaner");
 
         options.forEach(option => {
           option.addEventListener("click", () => {
@@ -465,6 +437,46 @@ to update on github -->
         }
       }
 
+      if (currentObject === "Soap") {
+        if (currentPage === 0) {
+          text.innerText = "Use only the amount of soap you need. Bar soap or refillable bottles can help reduce packaging waste.";
+        } else {
+          text.innerText = "Choose a soap that suits your needs, and avoid washing products down storm drains. Follow the product label when disposing of leftovers.";
+          nextBtn.innerText = "Done";
+          return;
+        }
+      }
+
+      if (currentObject === "Cleaning Chemicals") {
+        if (currentPage === 0) {
+          text.innerText = "Use the smallest amount of cleaner recommended on its label. Using extra usually does not clean better and can create more waste.";
+        } 
+        else if (currentPage === 1) {
+          text.innerText = "For light cleaning, use equal parts water and white vinegar in a reusable spray bottle on vinegar-safe surfaces. Never mix cleaning products, especially bleach with ammonia or acids. Keep products in their original containers and follow the label for safe storage and disposal.";
+          nextBtn.innerText = "Next";
+        }
+        else {
+          const note = document.querySelector("#sticky-note .note");
+          note.classList.add("note-bathroom-game");
+          text.innerText = "Build a simple everyday cleaner. Choose water and white vinegar, then check your recipe.";
+          game.innerHTML = `
+            <div class="cleaner-ingredients" aria-label="Cleaner ingredients">
+              <button type="button" class="bathroom-game-option" data-ingredient="water" aria-pressed="false">Water</button>
+              <button type="button" class="bathroom-game-option" data-ingredient="vinegar" aria-pressed="false">White vinegar</button>
+              <button type="button" class="bathroom-game-option" data-ingredient="bleach" aria-pressed="false">Bleach</button>
+              <button type="button" class="bathroom-game-option" data-ingredient="soap" aria-pressed="false">Extra cleaner</button>
+            </div>
+            <button type="button" id="check-cleaner" class="bathroom-game-submit">Check my cleaner</button>
+            <p id="bathroom-game-status" class="bathroom-game-status" aria-live="polite">
+              Select two ingredients.
+            </p>
+          `;
+          setupCleanerRecipeGame();
+          nextBtn.innerText = "Done";
+          return;
+      }
+    }
+
       if (currentObject === "Rainwater Collector") {
         if (currentPage === 0) {
           text.innerText = "Harvesting rainwater reduces the reliance on municipal water, helping to both decrease water bill costs and manage erosion.";
@@ -490,6 +502,13 @@ to update on github -->
           return;
         }
       }
+
+      if (!text.innerText) {
+        text.innerText = "Information for this item is not available yet.";
+        nextBtn.innerText = "Done";
+        return;
+      }
+
       nextBtn.innerText = "Next";
     }
 
